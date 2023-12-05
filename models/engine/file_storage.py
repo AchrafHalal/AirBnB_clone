@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Defines the FileStorage class."""
 import json
+from pathlib import Path
 from models.base_model import BaseModel
 
 
@@ -29,6 +30,19 @@ class FileStorage:
 
         with open(FileStorage.__file_path, "w") as f:
             json.dump(objdict, f)
+
+    def reload(self):
+        """Deserialize the JSON file __file_path to __objects, if it exists."""
+      
+        if Path(FileStorage.__file_path).exists():
+            with open(FileStorage.__file_path, mode="r", encoding="utf-8") as f:
+                objdict = json.load(f)
+            for k, v in objdict.items():
+                cls_name = v["__class__"]
+                del v["__class__"]
+                FileStorage.__objects[k] = eval(cls_name)(**v)
+        else:
+            return        
     
 
 
