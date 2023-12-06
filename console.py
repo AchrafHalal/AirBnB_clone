@@ -90,7 +90,22 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             del object["{}.{}".format(argul[0], argul[1])]
-            storage.save()        
+            storage.save()   
+
+    def do_all(self, arg):
+        """All the instance to be shown"""
+        
+        argul = parse_argu(arg)
+        if len(argul) > 0 and argul[0] not in HBNBCommand.__classes:
+            print("** class doesn't exist **")
+        else:
+            objl = []
+            for obj in storage.all().values():
+                if len(argul) > 0 and argul[0] == obj.__class__.__name__:
+                    objl.append(obj.__str__())
+                elif len(argul) == 0:
+                    objl.append(obj.__str__())
+            print(objl)             
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()    
