@@ -136,7 +136,7 @@ class HBNBCommand(cmd.Cmd):
             print(objl)  
 
     def do_count(self, arg):
-        """count the number of instances of a  class."""
+        """count the number of instances of a  class.""" 
         argu = parse_argu(arg)
         count = 0
         for obj in storage.all().values():
