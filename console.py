@@ -51,7 +51,7 @@ class HBNBCommand(cmd.Cmd):
     
     def do_create(self, arg):
         """Create a new class instance and print its id."""
-        
+
         argul = parse_argu(arg)
         if len(argul) == 0:
             print("** class name missing **")
@@ -61,6 +61,20 @@ class HBNBCommand(cmd.Cmd):
             print(eval(argul[0])().id)
             storage.save()
     
+    def do_show(self, arg):
+        """Show the string representation of a class instance based on the class name and id."""
+        argul = parse_argu(arg)
+        object = storage.all()
+        if len(argul) == 0:
+            print("** class name missing **")
+        elif argul[0] not in HBNBCommand.__classes:
+            print("** class doesn't exist **")
+        elif len(argul) == 1:
+            print("** instance id missing **")
+        elif "{}.{}".format(argul[0], argul[1]) not in object:
+            print("** no instance found **")
+        else:
+            print(object["{}.{}".format(argul[0], argul[1])])
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()    
