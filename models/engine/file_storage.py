@@ -3,6 +3,12 @@
 import json
 from pathlib import Path
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
 
 
 
@@ -42,9 +48,5 @@ class FileStorage:
                 del v["__class__"]
                 FileStorage.__objects[k] = eval(cls_name)(**v)
         else:
-            return        
-    
-
-
-
-   
+            return    
+            
