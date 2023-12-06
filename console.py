@@ -52,60 +52,104 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, arg):
         """Create a new class instance and print its id."""
 
-        argul = parse_argu(arg)
-        if len(argul) == 0:
+        argu = parse_argu(arg)
+        if len(argu) == 0:
             print("** class name missing **")
-        elif argul[0] not in HBNBCommand.__classes:
+        elif argu[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
-            print(eval(argul[0])().id)
+            print(eval(argu[0])().id)
             storage.save()
     
     def do_show(self, arg):
         """Show the string representation of a class instance based on the class name and id."""
-        argul = parse_argu(arg)
+        argu = parse_argu(arg)
         object = storage.all()
-        if len(argul) == 0:
+        if len(argu) == 0:
             print("** class name missing **")
-        elif argul[0] not in HBNBCommand.__classes:
+        elif argu[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-        elif len(argul) == 1:
+        elif len(argu) == 1:
             print("** instance id missing **")
-        elif "{}.{}".format(argul[0], argul[1]) not in object:
+        elif "{}.{}".format(argu[0], argu[1]) not in object:
             print("** no instance found **")
         else:
-            print(object["{}.{}".format(argul[0], argul[1])])
+            print(object["{}.{}".format(argu[0], argu[1])])
 
     def do_destroy(self, arg):
         """Delete a class instance of an id."""
-        argul = parse_argu(arg)
+        argu = parse_argu(arg)
         object = storage.all()
-        if len(argul) == 0:
+        if len(argu) == 0:
             print("** class name missing **")
-        elif argul[0] not in HBNBCommand.__classes:
+        elif argu[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-        elif len(argul) == 1:
+        elif len(argu) == 1:
             print("** instance id missing **")
-        elif "{}.{}".format(argul[0], argul[1]) not in object.keys():
+        elif "{}.{}".format(argu[0], argu[1]) not in object.keys():
             print("** no instance found **")
         else:
-            del object["{}.{}".format(argul[0], argul[1])]
+            del object["{}.{}".format(argu[0], argu[1])]
             storage.save()   
 
     def do_all(self, arg):
         """All the instance to be shown"""
-        
-        argul = parse_argu(arg)
-        if len(argul) > 0 and argul[0] not in HBNBCommand.__classes:
+
+        argu = parse_argu(arg)
+        if len(argu) > 0 and argu[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
             objl = []
             for obj in storage.all().values():
-                if len(argul) > 0 and argul[0] == obj.__class__.__name__:
+                if len(argu) > 0 and argu[0] == obj.__class__.__name__:
                     objl.append(obj.__str__())
-                elif len(argul) == 0:
+                elif len(argu) == 0:
                     objl.append(obj.__str__())
-            print(objl)             
+            print(objl)   
+
+    def do_update(self, arg):
+        """Update the instances."""
+        argu = parse_argu(arg)
+        object = storage.all()
+
+        if len(argu) == 0:
+            print("** class name missing **")
+            return False
+        if argu[0] not in HBNBCommand.__classes:
+            print("** class doesn't exist **")
+            return False
+        if len(argu) == 1:
+            print("** instance id missing **")
+            return False
+        if "{}.{}".format(argu[0], argu[1]) not in object.keys():
+            print("** no instance found **")
+            return False
+        if len(argu) == 2:
+            print("** attribute name missing **")
+            return False
+        if len(argu) == 3:
+            try:
+                type(eval(argu[2])) != dict
+            except NameError:
+                print("** value missing **")
+                return False
+        if len(argu) == 4:
+            obj = object["{}.{}".format(argu[0], argu[1])]
+            if argu[2] in obj.__class__.__dict__.keys():
+                valtype = type(obj.__class__.__dict__[argu[2]])
+                obj.__dict__[argu[2]] = valtype(argu[3])
+            else:
+                obj.__dict__[argu[2]] = argu[3]
+        elif type(eval(argu[2])) == dict:
+            obj = object["{}.{}".format(argu[0], argu[1])]
+            for k, v in eval(argu[2]).items():
+                if (k in obj.__class__.__dict__.keys() and
+                        type(obj.__class__.__dict__[k]) in {str, int, float}):
+                    valtype = type(obj.__class__.__dict__[k])
+                    obj.__dict__[k] = valtype(v)
+                else:
+                    obj.__dict__[k] = v
+        storage.save()                  
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()    
