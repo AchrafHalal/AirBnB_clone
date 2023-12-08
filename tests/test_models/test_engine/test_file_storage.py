@@ -12,7 +12,6 @@ from models.base_model import BaseModel
 from models import storage
 import pycodestyle
 
-
 class TestFileStorage(unittest.TestCase):
 
     def setUp(self):
