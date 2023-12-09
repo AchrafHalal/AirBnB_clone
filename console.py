@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Defines the HBnB console."""
+
 import cmd
 import re
 from shlex import split
@@ -11,6 +12,7 @@ from models.city import City
 from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
+
 
 def parse_argu(arg):
     curly_braces = re.search(r"\{(.*?)\}", arg)
@@ -29,10 +31,9 @@ def parse_argu(arg):
         retl.append(curly_braces.group())
         return retl
 
+
 class HBNBCommand(cmd.Cmd):
     """Defines the HBnB command interpreter."""
-
-
     prompt = "(hbnb) "
     __classes = {
         "BaseModel",
@@ -43,6 +44,7 @@ class HBNBCommand(cmd.Cmd):
         "Amenity",
         "Review",
     }
+
     def emptyline(self):
         """Do nothing upon receiving an empty line."""
         pass
@@ -71,15 +73,14 @@ class HBNBCommand(cmd.Cmd):
     def do_quit(self, arg):
         """Quit command to exit the program."""
         return True
-    
+
     def do_EOF(self, arg):
         """EOF signal to exit the program."""
         print("")
         return True
-    
+
     def do_create(self, arg):
         """Create a new class instance and print its id."""
-
         argu = parse_argu(arg)
         if len(argu) == 0:
             print("** class name missing **")
@@ -88,9 +89,10 @@ class HBNBCommand(cmd.Cmd):
         else:
             print(eval(argu[0])().id)
             storage.save()
-    
+
     def do_show(self, arg):
-        """Show the string representation of a class instance based on the class name and id."""
+        """Show the string representation of a class
+            instance based on the class name and id."""
         argu = parse_argu(arg)
         object = storage.all()
         if len(argu) == 0:
@@ -118,11 +120,10 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             del object["{}.{}".format(argu[0], argu[1])]
-            storage.save()   
+            storage.save()
 
     def do_all(self, arg):
         """All the instance to be shown"""
-
         argu = parse_argu(arg)
         if len(argu) > 0 and argu[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
@@ -133,16 +134,16 @@ class HBNBCommand(cmd.Cmd):
                     objl.append(obj.__str__())
                 elif len(argu) == 0:
                     objl.append(obj.__str__())
-            print(objl)  
+            print(objl)
 
     def do_count(self, arg):
-        """count the number of instances of a  class.""" 
+        """count the number of instances of a  class."""
         argu = parse_argu(arg)
         count = 0
         for obj in storage.all().values():
             if argu[0] == obj.__class__.__name__:
                 count += 1
-        print(count)         
+        print(count)
 
     def do_update(self, arg):
         """Update the instances."""
@@ -186,7 +187,8 @@ class HBNBCommand(cmd.Cmd):
                     obj.__dict__[k] = valtype(v)
                 else:
                     obj.__dict__[k] = v
-        storage.save()                  
+        storage.save()
+
 
 if __name__ == '__main__':
-    HBNBCommand().cmdloop()    
+    HBNBCommand().cmdloop()
