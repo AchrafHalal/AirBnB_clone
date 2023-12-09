@@ -11,7 +11,6 @@ from models.amenity import Amenity
 from models.review import Review
 
 
-
 class FileStorage:
     """Storage classe for processing and storing data."""
 
@@ -21,7 +20,7 @@ class FileStorage:
     def all(self):
         """Return the dictionary __objects."""
         return FileStorage.__objects
-    
+
     def new(self, obj):
         """Set in __objects obj with key <obj_class_name>.id"""
         obj_name = obj.__class__.__name__
@@ -39,14 +38,12 @@ class FileStorage:
 
     def reload(self):
         """Deserialize the JSON file __file_path to __objects, if it exists."""
-      
         if Path(FileStorage.__file_path).exists():
-            with open(FileStorage.__file_path, mode="r", encoding="utf-8") as f:
+            with open(FileStorage.__file_path, mode="r", encoding="utf-8")as f:
                 objdict = json.load(f)
             for k, v in objdict.items():
                 cls_name = v["__class__"]
                 del v["__class__"]
                 FileStorage.__objects[k] = eval(cls_name)(**v)
         else:
-            return    
-            
+            return
